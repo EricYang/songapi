@@ -15,14 +15,14 @@ mongodbObj = function(host, port, db_name, collection_name ) {
 	_collection_name=collection_name;
 };
 
-
+//獲取collection
 mongodbObj.prototype.getCollection= function(callback) {
 	this.db.collection(_collection_name, function(error, the_collection) {
 			if( error ) callback(error);
 			else callback(null, the_collection);
 			});
 };
-
+//查全部
 mongodbObj.prototype.findAll = function(callback) {
 	this.getCollection(function(error, the_collection) {
 			if( error ) callback(error)
@@ -34,7 +34,7 @@ mongodbObj.prototype.findAll = function(callback) {
 			}
 			});
 };
-
+//查詢by SongId
 mongodbObj.prototype.findBySongId = function(id, callback) {
 	this.getCollection(function(error, the_collection) {
 			if( error ) callback(error)
@@ -47,7 +47,7 @@ mongodbObj.prototype.findBySongId = function(id, callback) {
 			}
 			});
 };
-
+//查詢by Id
 mongodbObj.prototype.findById = function(id, callback) {
 	this.getCollection(function(error, the_collection) {
 			if( error ) callback(error)
@@ -59,7 +59,7 @@ mongodbObj.prototype.findById = function(id, callback) {
 			}
 			});
 };
-
+//儲存
 mongodbObj.prototype.save = function(Obj, callback) {
 	this.getCollection(function(error, the_collection) {
 			if( error ) callback(error)
@@ -91,6 +91,7 @@ mongodbObj.prototype.saveInDb = function(filePath,fileName,matedata,callback) {
 }
 var BSON = require('mongodb').BSONPure;
 
+//讀取資料庫
 mongodbObj.prototype.readInDb = function(fileId,callback) {
    var obj_id = BSON.ObjectID.createFromHexString(fileId);
    console.dir(obj_id);
@@ -98,14 +99,7 @@ mongodbObj.prototype.readInDb = function(fileId,callback) {
     gridFs.get(obj_id, function(error, data) {
             if( error ) callback(error)
                  else callback(null, data)
-            //使用nodejs 原生fs api写入文件到硬盘
             });
-    /*var gridStore = new mongo.GridStore(this.db, fileId, fileName,"w", {root: _collection_name});
-    gridStore.metadata=matedata;
-    gridStore.writeFile(filePath, function(err, fileInfo) {
-            if(err) callback(err)
-            console.log(fileInfo);
-            });*/
 }
 exports.mongodbObj = mongodbObj;
 
