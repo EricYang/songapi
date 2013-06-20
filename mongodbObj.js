@@ -8,6 +8,8 @@ var Server = require('mongodb').Server;
 var BSON = require('mongodb').BSON;
 var ObjectID = require('mongodb').ObjectID;
 var _collection_name='';
+var BSON = require('mongodb').BSONPure;
+
 //建構子
 mongodbObj = function(host, port, db_name, collection_name ) {
 	this.db= new Db(db_name, new Server(host, port, {auto_reconnect: true}, {}));
@@ -59,6 +61,7 @@ mongodbObj.prototype.findById = function(id, callback) {
 			}
 			});
 };
+
 //儲存
 mongodbObj.prototype.save = function(Obj, callback) {
 	this.getCollection(function(error, the_collection) {
@@ -78,6 +81,7 @@ mongodbObj.prototype.save = function(Obj, callback) {
 			}
 			});
 };
+
 // 寫入資料庫
 mongodbObj.prototype.saveInDb = function(filePath,fileName,matedata,callback) {
  
@@ -89,7 +93,6 @@ mongodbObj.prototype.saveInDb = function(filePath,fileName,matedata,callback) {
           console.log(fileInfo);
 			});
 }
-var BSON = require('mongodb').BSONPure;
 
 //讀取資料庫
 mongodbObj.prototype.readInDb = function(fileId,callback) {
@@ -101,5 +104,17 @@ mongodbObj.prototype.readInDb = function(fileId,callback) {
                  else callback(null, data)
             });
 }
+
+//取得gridStore
+mongodbObj.prototype.saveInDbByUpload = function(fileName,matedata) {
+
+    var fileId=new mongo.ObjectID();
+    var gridStore = new mongo.GridStore(this.db, fileId, fileName,"w", {root: _collection_name});
+    gridStore.metadata=matedata;
+    return gridStore;
+}
+
+
+
 exports.mongodbObj = mongodbObj;
 
